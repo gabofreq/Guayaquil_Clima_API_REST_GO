@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
+	"math"
 	"net/http"
 )
 
@@ -19,8 +19,8 @@ type nivel_1 struct {
 	Id      int
 	Name    string
 	Dt      int
-	Rain    float32
-	Snow    float32
+	Rain    float64
+	Snow    float64
 	Clouds  clouds_
 	Coord   coord_
 	Main    main_
@@ -30,19 +30,19 @@ type nivel_1 struct {
 }
 
 type main_ struct {
-	Temp       float32
-	Feels_like float32
-	Temp_min   float32
-	Temp_max   float32
-	Pressure   float32
-	Humidity   float32
-	Sea_level  float32
-	Grnd_level float32
+	Temp       float64
+	Feels_like float64
+	Temp_min   float64
+	Temp_max   float64
+	Pressure   float64
+	Humidity   float64
+	Sea_level  float64
+	Grnd_level float64
 }
 
 type coord_ struct {
-	Lat  float32
-	Long float32
+	Lat  float64
+	Long float64
 }
 
 type clouds_ struct {
@@ -50,7 +50,7 @@ type clouds_ struct {
 }
 
 type wind_ struct {
-	Speed float32
+	Speed float64
 	Deg   int
 }
 
@@ -66,30 +66,31 @@ type weather_ struct {
 }
 
 type variables struct {
-	Codigo              string
-	Cuenta              int
-	Id_Lista            int
-	Ciudad              string
-	Pais                string
-	Latitud             float32
-	Longitud            float32
-	Temperatura         float32
-	Sensaacion_Termica  float32
-	Temperatura_Mininna float32
-	Temperatura_Maxima  float32
-	Presion             float32
-	Humedad             float32
-	Nivel_Mar           float32
-	Nivel_Suelo         float32
-	Precipitacion       float32
-	Nieve               float32
-	Nubes               int
-	Velocidad_Viento    float32
-	Direccion_Viento    int
-	Clima_Id            int
-	Estado_Clima        string
-	Descripcion_Clima   string
-	Icono               string
+	Codigo             string
+	Cuenta             int
+	Id_Lista           int
+	Pais               string
+	Ciudad             string
+	Latitud            float64
+	Longitud           float64
+	Dt                 int
+	Temperatura        float64
+	Sensacion_Termica  float64
+	Temperatura_Minima float64
+	Temperatura_Maxima float64
+	Presion            float32
+	Humedad            float32
+	Nivel_Mar          float32
+	Nivel_Suelo        float32
+	Precipitacion      float32
+	Nieve              float32
+	Nubes              int
+	Velocidad_Viento   float32
+	Direccion_Viento   int
+	Id_Clima           int
+	Estado_Clima       string
+	Descripcion_Clima  string
+	Icono              string
 }
 
 func main() {
@@ -114,32 +115,40 @@ func api_get_clima() {
 	res, _ := http.DefaultClient.Do(req)
 	body, _ := ioutil.ReadAll(res.Body)
 	defer res.Body.Close()
-
 	var t nivel_0
 	json.Unmarshal(body, &t)
-	log.Println(t.Message)
-	log.Println(t.Cod)
-	log.Println(t.Count)
-	log.Println((t.List[0]).Id)
-	log.Println((t.List[0]).Name)
-	log.Println((t.List[0]).Dt)
-	log.Println(((t.List[0]).Coord).Lat)
-	log.Println(((t.List[0]).Coord).Long)
-	log.Println(((t.List[0]).Main).Temp)
-	log.Println(((t.List[0]).Main).Feels_like)
-	log.Println(((t.List[0]).Main).Temp_min)
-	log.Println(((t.List[0]).Main).Temp_max)
-	log.Println(((t.List[0]).Main).Pressure)
-	log.Println(((t.List[0]).Main).Humidity)
-	log.Println(((t.List[0]).Main).Sea_level)
-	log.Println(((t.List[0]).Main).Grnd_level)
-	log.Println(((t.List[0]).Wind).Speed)
-	log.Println(((t.List[0]).Wind).Deg)
-	log.Println((t.List[0]).Rain)
-	log.Println((t.List[0]).Snow)
-	log.Println(((t.List[0]).Clouds).All)
-	log.Println(((t.List[0]).Weather[0]).Id)
-	log.Println(((t.List[0]).Weather[0]).Main)
-	log.Println(((t.List[0]).Weather[0]).Description)
-	log.Println(((t.List[0]).Weather[0]).Icon)
+	var variable = new(variables)
+	variable.Codigo = t.Cod
+	variable.Cuenta = t.Count
+	variable.Id_Lista = (t.List[0]).Id
+	variable.Pais = ((t.List[0]).Sys).Country
+	variable.Ciudad = (t.List[0]).Name
+	variable.Latitud = ((t.List[0]).Coord).Lat
+	variable.Longitud = ((t.List[0]).Coord).Long
+	variable.Dt = (t.List[0]).Dt
+
+	variable.Temperatura = math.Round((((t.List[0]).Main).Temp-273.15)*100) / 100
+	variable.Sensacion_Termica = math.Round((((t.List[0]).Main).Feels_like-273.15)*100) / 100
+	variable.Temperatura_Minima = math.Round((((t.List[0]).Main).Temp_min-273.15)*100) / 100
+	variable.Temperatura_Maxima = math.Round((((t.List[0]).Main).Temp_max-273.15)*100) / 100
+	variable.Presion = ((t.List[0]).Main).Pressure
+	variable.Humedad = ((t.List[0]).Main).Humidity
+	variable.Nivel_Mar = ((t.List[0]).Main).Sea_level
+	variable.Nivel_Suelo = ((t.List[0]).Main).Grnd_level
+	variable.Precipitacion = (t.List[0]).Rain
+	variable.Nieve = (t.List[0]).Snow
+	variable.Nubes = ((t.List[0]).Clouds).All
+	variable.Velocidad_Viento = ((t.List[0]).Wind).Speed
+	variable.Direccion_Viento = ((t.List[0]).Wind).Deg
+	variable.Id_Clima = ((t.List[0]).Weather[0]).Id
+	variable.Estado_Clima = ((t.List[0]).Weather[0]).Main
+	variable.Descripcion_Clima = ((t.List[0]).Weather[0]).Description
+	variable.Icono = ((t.List[0]).Weather[0]).Icon
+	jsons, err := json.Marshal(variable)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("%s", string(jsons))
+	json.Unmarshal(jsons, &variable)
 }
