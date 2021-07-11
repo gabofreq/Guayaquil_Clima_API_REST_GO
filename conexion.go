@@ -78,14 +78,14 @@ type variables struct {
 	Sensacion_Termica  float64
 	Temperatura_Minima float64
 	Temperatura_Maxima float64
-	Presion            float32
-	Humedad            float32
-	Nivel_Mar          float32
-	Nivel_Suelo        float32
-	Precipitacion      float32
-	Nieve              float32
+	Presion            float64
+	Humedad            float64
+	Nivel_Mar          float64
+	Nivel_Suelo        float64
+	Precipitacion      float64
+	Nieve              float64
 	Nubes              int
-	Velocidad_Viento   float32
+	Velocidad_Viento   float64
 	Direccion_Viento   int
 	Id_Clima           int
 	Estado_Clima       string
