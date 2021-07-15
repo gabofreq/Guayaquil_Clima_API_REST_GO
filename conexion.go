@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math"
 	"net/http"
 	"os"
@@ -131,7 +132,7 @@ type variables struct {
 	Latitud            float64
 	Longitud           float64
 	Dt                 int
-	Temperatura        float64
+	Temperatura        float64 `json:"Temperatura"`
 	Sensacion_Termica  float64
 	Temperatura_Minima float64
 	Temperatura_Maxima float64
@@ -152,10 +153,16 @@ type variables struct {
 
 func main() {
 	api_get_info()
-	config := oauth1.NewConfig(os.Getenv(""), os.Getenv(""))
-	token := oauth1.NewToken(os.Getenv(""), os.Getenv(""))
+	config := oauth1.NewConfig(os.Getenv("CONSUMER_KEY"), os.Getenv("CONSUMER_SECRET_KEY"))
+	token := oauth1.NewToken(os.Getenv("TOKEN_KEY"), os.Getenv("TOKEN_SECRET_KEY"))
 	httpClient := config.Client(oauth1.NoContext, token)
+	// Client do twitter
 	client := twitter.NewClient(httpClient)
+	// Publicar um tweet
+	_, _, err := client.Statuses.Update("Mensaje", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
 
