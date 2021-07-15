@@ -6,6 +6,10 @@ import (
 	"io/ioutil"
 	"math"
 	"net/http"
+	"os"
+
+	"github.com/dghubble/go-twitter/twitter"
+	"github.com/dghubble/oauth1"
 )
 
 type nivel_clim_0 struct {
@@ -148,6 +152,11 @@ type variables struct {
 
 func main() {
 	api_get_info()
+	config := oauth1.NewConfig(os.Getenv(""), os.Getenv(""))
+	token := oauth1.NewToken(os.Getenv(""), os.Getenv(""))
+	httpClient := config.Client(oauth1.NoContext, token)
+	client := twitter.NewClient(httpClient)
+
 }
 
 func api_get_info() {
