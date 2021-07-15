@@ -132,7 +132,7 @@ type variables struct {
 	Latitud            float64
 	Longitud           float64
 	Dt                 int
-	Temperatura        float64 `json:"Temperatura"`
+	Temperatura        float64
 	Sensacion_Termica  float64
 	Temperatura_Minima float64
 	Temperatura_Maxima float64
