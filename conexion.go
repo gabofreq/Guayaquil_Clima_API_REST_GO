@@ -7,7 +7,6 @@ import (
 	"log"
 	"math"
 	"net/http"
-	"os"
 
 	"github.com/dghubble/go-twitter/twitter"
 	"github.com/dghubble/oauth1"
@@ -110,63 +109,48 @@ type weather_ struct {
 }
 
 type variables struct {
-	Codigo             string
-	Cuenta             int
-	Id_Lista           int
-	Geonameid_Pais     int
-	Codigo_Pais        string
-	Pais_Nombre        string
-	Geonameid_Ciudad   int
-	Ciudad             string
-	Geonameid_Canton   int
-	Canton             string
-	Poblacion          int
-	Wiki_id            string
-	Wiki_url           string
-	Code_Division      string
-	Codigo_Moneda      string
-	Moneda             string
-	Zona_Horaria       string
-	Fecha              string
-	Gtm_offset         int
-	Latitud            float64
-	Longitud           float64
-	Dt                 int
-	Temperatura        float64
-	Sensacion_Termica  float64
-	Temperatura_Minima float64
-	Temperatura_Maxima float64
-	Presion            float64
-	Humedad            float64
-	Nivel_Mar          float64
-	Nivel_Suelo        float64
-	Precipitacion      float64
-	Nieve              float64
-	Nubes              int
-	Velocidad_Viento   float64
-	Direccion_Viento   int
-	Id_Clima           int
-	Estado_Clima       string
-	Descripcion_Clima  string
-	Icono              string
+	//Codigo             string
+	//Cuenta             int
+	//Id_Lista           int
+	//Geonameid_Pais     int
+	//Codigo_Pais        string
+	//Pais_Nombre string
+	//Geonameid_Ciudad   int
+	Ciudad string
+	//Geonameid_Canton   int
+	//Canton    string
+	Poblacion int
+	//Wiki_id            string
+	//Wiki_url           string
+	//Code_Division      string
+	//Codigo_Moneda      string
+	//Moneda             string
+	Zona_Horaria string
+	Fecha        string
+	//Gtm_offset         int
+	Latitud  float64
+	Longitud float64
+	//Dt                 int
+	Temperatura       float64
+	Sensacion_Termica float64
+	//Temperatura_Minima float64
+	//Temperatura_Maxima float64
+	//Presion float64
+	Humedad float64
+	//Nivel_Mar          float64
+	//Nivel_Suelo        float64
+	Precipitacion float64
+	//Nieve              float64
+	Nubes int
+	//Velocidad_Viento float64
+	//Direccion_Viento int
+	//Id_Clima           int
+	//Estado_Clima      string
+	Descripcion_Clima string
+	//Icono              string
 }
 
 func main() {
-	api_get_info()
-	config := oauth1.NewConfig(os.Getenv("CONSUMER_KEY"), os.Getenv("CONSUMER_SECRET_KEY"))
-	token := oauth1.NewToken(os.Getenv("TOKEN_KEY"), os.Getenv("TOKEN_SECRET_KEY"))
-	httpClient := config.Client(oauth1.NoContext, token)
-	// Client do twitter
-	client := twitter.NewClient(httpClient)
-	// Publicar um tweet
-	_, _, err := client.Statuses.Update("Mensaje", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-}
-
-func api_get_info() {
 	url_1 := "https://openweathermap.org/data/2.5/find?q=guayaquil&appid=439d4b804bc8187953eb36d2a8c26a02&units=metric"
 	req_1, _ := http.NewRequest("GET", url_1, nil)
 	res_1, _ := http.DefaultClient.Do(req_1)
@@ -184,49 +168,57 @@ func api_get_info() {
 	var t2 nivel_info_0
 	json.Unmarshal(body_2, &t2)
 	var variable = new(variables)
-	variable.Codigo = t1.Cod
-	variable.Cuenta = t1.Count
-	variable.Id_Lista = (t1.List[0]).Id
-	variable.Codigo_Pais = (t2.Country).Code
-	variable.Geonameid_Pais = (t2.Country).Geonameid
-	variable.Pais_Nombre = (t2.Country).Name
-	variable.Geonameid_Ciudad = t2.Geonameid
+	//variable.Codigo = t1.Cod
+	//variable.Cuenta = t1.Count
+	//variable.Id_Lista = (t1.List[0]).Id
+	//variable.Codigo_Pais = (t2.Country).Code
+	//variable.Geonameid_Pais = (t2.Country).Geonameid
+	//variable.Pais_Nombre = (t2.Country).Name
+	//variable.Geonameid_Ciudad = t2.Geonameid
 	variable.Ciudad = t2.Name
-	variable.Geonameid_Canton = (t2.Division).Geonameid
-	variable.Canton = (t2.Division).Name
+	//variable.Geonameid_Canton = (t2.Division).Geonameid
+	//variable.Canton = (t2.Division).Name
 	variable.Latitud = t2.Latitude
 	variable.Longitud = t2.Longitude
 	variable.Poblacion = t2.Population
-	variable.Wiki_id = t2.Wiki_id
-	variable.Wiki_url = t2.Wiki_url
-	variable.Codigo_Moneda = (t2.Currency).Code
-	variable.Moneda = (t2.Currency).Name
+	//variable.Wiki_id = t2.Wiki_id
+	//variable.Wiki_url = t2.Wiki_url
+	//variable.Codigo_Moneda = (t2.Currency).Code
+	//variable.Moneda = (t2.Currency).Name
 	variable.Zona_Horaria = (t2.Timezone).Timezone
 	variable.Fecha = (t2.Timezone).Time[:19]
-	variable.Gtm_offset = (t2.Timezone).Gtm_offset
-	variable.Dt = (t1.List[0]).Dt
+	//variable.Gtm_offset = (t2.Timezone).Gtm_offset
+	//variable.Dt = (t1.List[0]).Dt
 	variable.Temperatura = math.Round((((t1.List[0]).Main).Temp-273.15)*100) / 100
 	variable.Sensacion_Termica = math.Round((((t1.List[0]).Main).Feels_like-273.15)*100) / 100
-	variable.Temperatura_Minima = math.Round((((t1.List[0]).Main).Temp_min-273.15)*100) / 100
-	variable.Temperatura_Maxima = math.Round((((t1.List[0]).Main).Temp_max-273.15)*100) / 100
-	variable.Presion = ((t1.List[0]).Main).Pressure
+	//variable.Temperatura_Minima = math.Round((((t1.List[0]).Main).Temp_min-273.15)*100) / 100
+	//variable.Temperatura_Maxima = math.Round((((t1.List[0]).Main).Temp_max-273.15)*100) / 100
+	//variable.Presion = ((t1.List[0]).Main).Pressure
 	variable.Humedad = ((t1.List[0]).Main).Humidity
-	variable.Nivel_Mar = ((t1.List[0]).Main).Sea_level
-	variable.Nivel_Suelo = ((t1.List[0]).Main).Grnd_level
+	//variable.Nivel_Mar = ((t1.List[0]).Main).Sea_level
+	//variable.Nivel_Suelo = ((t1.List[0]).Main).Grnd_level
 	variable.Precipitacion = (t1.List[0]).Rain
-	variable.Nieve = (t1.List[0]).Snow
+	//variable.Nieve = (t1.List[0]).Snow
 	variable.Nubes = ((t1.List[0]).Clouds).All
-	variable.Velocidad_Viento = ((t1.List[0]).Wind).Speed
-	variable.Direccion_Viento = ((t1.List[0]).Wind).Deg
-	variable.Id_Clima = ((t1.List[0]).Weather[0]).Id
-	variable.Estado_Clima = ((t1.List[0]).Weather[0]).Main
+	//variable.Velocidad_Viento = ((t1.List[0]).Wind).Speed
+	//variable.Direccion_Viento = ((t1.List[0]).Wind).Deg
+	//variable.Id_Clima = ((t1.List[0]).Weather[0]).Id
+	//variable.Estado_Clima = ((t1.List[0]).Weather[0]).Main
 	variable.Descripcion_Clima = ((t1.List[0]).Weather[0]).Description
-	variable.Icono = ((t1.List[0]).Weather[0]).Icon
+	//variable.Icono = ((t1.List[0]).Weather[0]).Icon
 	jsons, err := json.Marshal(variable)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("%s", string(jsons))
+	config := oauth1.NewConfig("DErGQdChtRmzrm6Ea0C3IcK2X", "C2TNTJS1GTAQav7zxPD6htidSvJqrIxfSXFg5hEtn6UPEHxdlb")
+	token := oauth1.NewToken("1415506951782420480-BlrFoWeXpFpZghNsq1mtWU69fzUU5f", "HWqmcSSOvytiEIut9Tku9k89pQ2Pi0ocou3zHb10govmi")
+	httpClient := config.Client(oauth1.NoContext, token)
+	client := twitter.NewClient(httpClient)
+	tweet, _, err := client.Statuses.Update(string(jsons), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 	json.Unmarshal(jsons, &variable)
+	log.Print(tweet.Text)
 }
